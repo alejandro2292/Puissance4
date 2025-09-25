@@ -37,7 +37,7 @@ for (let coup of coups) {
   let joueur = joueurs[tour % 2];
   console.log(`Joueur ${joueur} joue dans la colonne ${coup + 1}`);
   if (!poserPiece(coup, joueur)) {
-    console.log(`⚠️ Colonne ${coup + 1} pleine !`);
+    console.log(`Colonne ${coup + 1} pleine !`);
   }
   afficherGrille();
   tour++;
