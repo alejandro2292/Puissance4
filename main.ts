@@ -1,20 +1,21 @@
-//Initialisation des variables lignes et colonnes
-const LIGNES: number = 6;
-const COLONNES: number = 7;
-
-// Création de la grille vide
+const LIGNES = 6;
+const COLONNES = 7;
 let grille: string[][] = Array.from({ length: LIGNES }, () => Array(COLONNES).fill("."));
 
-// Fonction pour afficher la grille
+let joueurs: string[] = ["X", "O"];
+let tour = 0;
+
+//Affichage de la grille
 function afficherGrille(): void {
-  console.clear();
+  console.log("\nGrille actuelle :");
   for (let ligne of grille) {
     console.log(ligne.join(" "));
   }
   console.log(Array.from({ length: COLONNES }, (_, i) => i + 1).join(" "));
+  console.log("\n");
 }
 
-// Fonction pour poser une pièce dans une colonne
+//Poser une pièce
 function poserPiece(colonne: number, joueur: string): boolean {
   for (let ligne = LIGNES - 1; ligne >= 0; ligne--) {
     if (grille[ligne][colonne] === ".") {
@@ -25,7 +26,7 @@ function poserPiece(colonne: number, joueur: string): boolean {
   return false;
 }
 
-// Vérification de victoire
+//Vérification de victoire
 function verifierVictoire(joueur: string): boolean {
   // Horizontal
   for (let i = 0; i < LIGNES; i++) {
@@ -36,7 +37,7 @@ function verifierVictoire(joueur: string): boolean {
           grille[i][j+3] === joueur) return true;
     }
   }
-  // Vertical
+  //Vertical
   for (let i = 0; i <= LIGNES - 4; i++) {
     for (let j = 0; j < COLONNES; j++) {
       if (grille[i][j] === joueur &&
@@ -45,7 +46,7 @@ function verifierVictoire(joueur: string): boolean {
           grille[i+3][j] === joueur) return true;
     }
   }
-  // Diagonale descendante (\)
+  //Diagonale descendante
   for (let i = 0; i <= LIGNES - 4; i++) {
     for (let j = 0; j <= COLONNES - 4; j++) {
       if (grille[i][j] === joueur &&
@@ -54,7 +55,7 @@ function verifierVictoire(joueur: string): boolean {
           grille[i+3][j+3] === joueur) return true;
     }
   }
-  // Diagonale montante (/)
+  //Diagonale montante
   for (let i = 3; i < LIGNES; i++) {
     for (let j = 0; j <= COLONNES - 4; j++) {
       if (grille[i][j] === joueur &&
@@ -67,21 +68,28 @@ function verifierVictoire(joueur: string): boolean {
   return false;
 }
 
-
-// Simulation des coups (solution temporaire pour testé la grille)
-let coups: number[] = [2, 3, 2, 1, 4, 2, 5]; 
-
-// Changer de symbole pour les joueurs
-let joueurs: string[] = ["X", "O"];
-let tour = 0;
-
-// Simulation du jeu
-for (let coup of coups) {
+//Boucle de jeu 
+let partieTerminee = false;
+while (!partieTerminee && tour < LIGNES * COLONNES) {
   let joueur = joueurs[tour % 2];
+  
+  let coup: number;
+  do {
+    coup = Math.floor(Math.random() * COLONNES);
+  } while (!poserPiece(coup, joueur)); 
+
   console.log(`Joueur ${joueur} joue dans la colonne ${coup + 1}`);
-  if (!poserPiece(coup, joueur)) {
-    console.log(`Colonne ${coup + 1} pleine !`);
+  afficherGrille(); 
+
+  if (verifierVictoire(joueur)) {
+    console.log(`Joueur ${joueur} gagne !`);
+    partieTerminee = true;
+    break;
   }
-  afficherGrille();
+
   tour++;
+}
+
+if (!partieTerminee) {
+  console.log("Partie terminée sans gagnant !");
 }
